@@ -1,0 +1,8 @@
+Our company, TechNova, was founded in 2018 in Hyderabad, India.
+We specialize in AI-powered software solutions for healthcare and education.
+Our flagship product, MediAssist, helps doctors analyze patient records using machine learning.
+We have a team of 45 engineers and data scientists.
+TechNova raised $3M in seed funding in 2021 from Sequoia Capital India.
+Our education product, EduBot, serves over 200 schools across Andhra Pradesh and Telangana.
+Customer support is available Monday to Friday, 9 AM to 6 PM IST.
+Contact us at support@technova.ai or call +91-40-12345678.
