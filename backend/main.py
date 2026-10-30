@@ -1,10 +1,13 @@
 import os
 import uuid
+from fastapi.staticfiles import StaticFiles
 from datetime import datetime, timezone
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
+from pathlib import Path
+from fastapi.staticfiles import StaticFiles
 
 from ingest import ingest_bytes, list_ingested_files, delete_file_chunks
 from rag_pipeline import ask
@@ -128,3 +131,13 @@ def get_files():
 @app.delete("/files/{filename}")
 def delete_file(filename: str):
     return {"deleted": delete_file_chunks(filename)}
+
+# Serve React frontend only when production build exists
+STATIC_DIR = Path(__file__).parent / "static"
+
+if STATIC_DIR.is_dir():
+    app.mount(
+        "/",
+        StaticFiles(directory=str(STATIC_DIR), html=True),
+        name="frontend"
+    )

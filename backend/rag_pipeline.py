@@ -2,7 +2,7 @@ import os
 import chromadb
 import json
 from groq import Groq
-from sentence_transformers import SentenceTransformer
+from embedding import embedder
 from dotenv import load_dotenv
 from typing import TypedDict, List
 from langgraph.graph import StateGraph, END
@@ -10,9 +10,9 @@ from langgraph.graph import StateGraph, END
 load_dotenv()
 
 # --- 1. Initialization ---
-chroma_client = chromadb.PersistentClient(path="./chroma_db")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+chroma_client = chromadb.PersistentClient(path=os.path.join(BASE_DIR, "chroma_db"))
 collection = chroma_client.get_or_create_collection("rag_docs")
-embedder = SentenceTransformer("all-MiniLM-L6-v2")
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 # --- 2. Define the Graph State ---

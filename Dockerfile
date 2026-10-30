@@ -1,29 +1,31 @@
-# Stage 1: Build the React Frontend
+
+# Stage 1: Build React Frontend
 FROM node:18-alpine AS frontend-builder
+
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
+
+COPY frontend/package*.json ./
+RUN npm ci
+
+COPY frontend/ ./
 RUN npm run build
 
-# Stage 2: Serve with FastAPI Backend
+# Stage 2: FastAPI Backend
 FROM python:3.10-slim
+
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y build-essential && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy backend requirements and install
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy backend code
 COPY backend/ ./backend
 
-# Copy built frontend assets into the backend static directory
+# Copy React production build
 COPY --from=frontend-builder /app/dist ./backend/static
 
 EXPOSE 8000
 
-# Run the FastAPI application
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--app-dir", "backend", "--host", "0.0.0.0", "--port", "8000"]

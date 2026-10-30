@@ -1,14 +1,14 @@
 import os
 import io
 import chromadb
-from sentence_transformers import SentenceTransformer
+from embedding import embedder
 from pypdf import PdfReader
 from pypdf.errors import PdfStreamError
 
 # Initialize Chroma and Embedding Model
-chroma_client = chromadb.PersistentClient(path="./chroma_db")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+chroma_client = chromadb.PersistentClient(path=os.path.join(BASE_DIR, "chroma_db"))
 collection = chroma_client.get_or_create_collection("rag_docs")
-embedder = SentenceTransformer("all-MiniLM-L6-v2")
 
 def chunk_text(text: str, chunk_size: int = 500, overlap: int = 50) -> list[str]:
     """Splits text into chunks. Uses word count for basic semantic preservation."""

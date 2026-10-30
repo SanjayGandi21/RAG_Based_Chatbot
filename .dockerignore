@@ -1,0 +1,20 @@
+
+# Node
+frontend/node_modules
+frontend/dist
+
+# Python
+backend/venv
+backend/__pycache__
+**/*.pyc
+
+# Secrets
+.env
+backend/.env
+
+# Git
+.git
+.gitignore
+
+# System
+.DS_Store
