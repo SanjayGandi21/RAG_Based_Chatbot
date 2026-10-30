@@ -1,6 +1,6 @@
 
 # Stage 1: Build React Frontend
-FROM node:18-alpine AS frontend-builder
+FROM node:22-alpine AS frontend-builder
 
 WORKDIR /app
 
@@ -23,7 +23,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ ./backend
 
-# Copy React production build
 COPY --from=frontend-builder /app/dist ./backend/static
 
 EXPOSE 8000
