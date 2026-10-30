@@ -28,10 +28,10 @@ session_titles = {}
 class QueryRequest(BaseModel):
     question: str
     session_id: Optional[str] = None
-    target_file: Optional[str] = None # <-- Added for file scoping
+    target_file: Optional[str] = None
 
 class RenameRequest(BaseModel):
-    title: str # <-- Added for renaming sessions
+    title: str 
 
 # --- Endpoints ---
 
@@ -42,7 +42,6 @@ async def upload_file(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="Unsupported file type")
     
     try:
-        # Read file exactly once
         contents = await file.read()
         if not contents:
             raise HTTPException(status_code=400, detail="File is empty")
@@ -73,7 +72,7 @@ async def ask_question(req: QueryRequest):
             "sources": res.get("sources", []), 
             "timestamp": now, 
             "target_file": req.target_file,
-            "needs_human": res.get("needs_human", False) # <-- ADDED THIS
+            "needs_human": res.get("needs_human", False)
         }
     ]
     chat_sessions[sid].extend(msg_pair)
@@ -82,12 +81,11 @@ async def ask_question(req: QueryRequest):
         "answer": res["answer"], 
         "sources": res.get("sources", []), 
         "session_id": sid,
-        "needs_human": res.get("needs_human", False) # <-- ADDED THIS
+        "needs_human": res.get("needs_human", False)
     }
 
 @app.get("/sessions")
 def get_sessions():
-    # Format the sessions exactly how the React frontend expects them
     sessions_list = []
     for sid, messages in chat_sessions.items():
         last_updated = messages[-1]["timestamp"] if messages else datetime.now(timezone.utc).isoformat()
@@ -107,7 +105,6 @@ def get_session(sid: str):
 
 @app.delete("/sessions/{sid}")
 def delete_session(sid: str):
-    # Missing endpoint added to fix the 405 error
     if sid in chat_sessions:
         del chat_sessions[sid]
     if sid in session_titles:
@@ -117,7 +114,6 @@ def delete_session(sid: str):
 
 @app.patch("/sessions/{sid}/rename")
 def rename_session(sid: str, req: RenameRequest):
-    # Missing endpoint added to allow renaming chats
     if sid in session_titles:
         session_titles[sid] = req.title
         return {"status": "success"}

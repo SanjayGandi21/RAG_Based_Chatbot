@@ -6,7 +6,6 @@ from pypdf import PdfReader
 from pypdf.errors import PdfStreamError
 
 # Initialize Chroma and Embedding Model
-# This will create a 'chroma_db' folder in your directory if it doesn't exist
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
 collection = chroma_client.get_or_create_collection("rag_docs")
 embedder = SentenceTransformer("all-MiniLM-L6-v2")

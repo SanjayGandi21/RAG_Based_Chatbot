@@ -4,3 +4,4 @@ __pycache__/
 node_modules/
 chroma_db/
 .DS_Store
+daa/

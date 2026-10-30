@@ -40,7 +40,7 @@ def router_node(state: AgentState) -> AgentState:
     Respond ONLY with a JSON object in this exact format: {{"intent": "value"}}"""
 
     response = groq_client.chat.completions.create(
-        model="llama-3.1-8b-instant",
+        model="openai/gpt-oss-120b",
         messages=[{"role": "user", "content": prompt}],
         temperature=0,
         response_format={"type": "json_object"}
@@ -108,7 +108,7 @@ def rag_node(state: AgentState) -> AgentState:
     user_message = f"Context:\n{context}\n\nQuestion: {query}"
 
     response = groq_client.chat.completions.create(
-        model="llama-3.1-8b-instant",
+        model="openai/gpt-oss-120b",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_message},
@@ -172,7 +172,7 @@ def ask(query: str, target_file: str = None) -> dict:
         "needs_human": False
     }
     
-    # Run the graph
+    
     result = app_graph.invoke(initial_state)
     
     return {
