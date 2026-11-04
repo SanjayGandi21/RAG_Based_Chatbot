@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 
-const API = "http://localhost:8000";
+const API = window.location.hostname === "localhost" 
+  ? "http://localhost:8000" 
+  : window.location.origin;
 
 const api = {
   ask: (question, session_id, target_file) =>
