@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 from pathlib import Path
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from ingest import ingest_bytes, list_ingested_files, delete_file_chunks
 from rag_pipeline import ask
@@ -132,12 +132,17 @@ def get_files():
 def delete_file(filename: str):
     return {"deleted": delete_file_chunks(filename)}
 
-# Serve React frontend only when production build exists
-STATIC_DIR = Path(__file__).parent / "static"
+# Serve React static assets in production
+STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 
-if STATIC_DIR.is_dir():
-    app.mount(
-        "/",
-        StaticFiles(directory=str(STATIC_DIR), html=True),
-        name="frontend"
-    )
+if os.path.exists(STATIC_DIR):
+    assets_dir = os.path.join(STATIC_DIR, "assets")
+    if os.path.exists(assets_dir):
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+
+    @app.get("/{catchall:path}")
+    async def serve_frontend(catchall: str):
+        index_file = os.path.join(STATIC_DIR, "index.html")
+        if os.path.exists(index_file):
+            return FileResponse(index_file)
+        return {"error": "Frontend build missing."}
